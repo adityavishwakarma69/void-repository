@@ -20,8 +20,11 @@ jobs:
 
       - name: Install build dependencies
         run: |
+          mkdir -p /etc/xbps.d
+          cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
+
           xbps-install -Sy xbps git bash shadow sudo
-          useradd -m builder
+          useradd -m -G xbuilder builder
           chown -R builder:builder "$GITHUB_WORKSPACE"
 
       - name: Make build script executable
