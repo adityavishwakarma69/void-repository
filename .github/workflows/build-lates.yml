@@ -23,7 +23,7 @@ jobs:
           mkdir -p /etc/xbps.d
           cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
 
-          xbps-install -Sy xbps git bash shadow sudo xtools
+          xbps-install -Sy xbps git bash shadow sudo xtools 66-devel
           useradd -m -G xbuilder builder
           chown -R builder:builder "$GITHUB_WORKSPACE"
 
