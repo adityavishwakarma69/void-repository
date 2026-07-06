@@ -12,6 +12,7 @@ jobs:
 
     container:
       image: ghcr.io/void-linux/void-glibc-full:latest
+      options: --privileged
 
     steps:
       - name: Checkout repository
@@ -19,7 +20,7 @@ jobs:
 
       - name: Install build dependencies
         run: |
-          xbps-install -Sy xbps git bash shadow
+          xbps-install -Sy xbps git bash shadow sudo
           useradd -m builder
           chown -R builder:builder "$GITHUB_WORKSPACE"
 
@@ -28,7 +29,7 @@ jobs:
 
       - name: Build packages
         run: |
-          su builder -c 'cd "$GITHUB_WORKSPACE" && ./scripts/build.sh --arch "x86_64 aarch64"'
+          sudo -Eu builder ./scripts/build.sh --arch "x86_64 aarch64"
 
       - name: Upload repository
         uses: actions/upload-artifact@v4
