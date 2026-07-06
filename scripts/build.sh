@@ -54,7 +54,6 @@ setup_environment() {
 
 
     common/travis/set_mirror.sh
-    common/travis/prepare.sh
     ./xbps-src binary-bootstrap
 }
 
