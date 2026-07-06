@@ -19,14 +19,16 @@ jobs:
 
       - name: Install build dependencies
         run: |
-          xbps-install -Suy xbps git bash
+          xbps-install -Sy xbps git bash shadow
+          useradd -m builder
+          chown -R builder:builder "$GITHUB_WORKSPACE"
 
       - name: Make build script executable
         run: chmod +x scripts/build.sh
 
       - name: Build packages
         run: |
-          ./scripts/build.sh --arch "x86_64 aarch64"
+          su builder -c 'cd "$GITHUB_WORKSPACE" && ./scripts/build.sh --arch "x86_64 aarch64"'
 
       - name: Upload repository
         uses: actions/upload-artifact@v4
