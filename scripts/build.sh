@@ -66,7 +66,7 @@ build_package() {
 build_packages() {
     arch="$1"
     echo "Building for $arch"
-    for pkg in srcpkgs/*; do
+    for pkg in "$SRCPKGS"/*; do
         build_package "$(basename "$pkg")" "$arch"
     done
 }
