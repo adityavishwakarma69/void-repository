@@ -39,21 +39,16 @@ setup_build_dir() {
 setup_environment() {
     git clone \
         --depth=1 \
-        --filter=blob:none \
-        --no-checkout \
         "$VOID_REPO" \
         "$VOID_DIR"
 
     cd "$VOID_DIR"
 
-    git sparse-checkout init --cone
-    git sparse-checkout set common etc mk xbps-src srcpkgs/base-files
-    git checkout HEAD
-
     cp -r "$SRCPKGS" srcpkgs
 
 
     common/travis/set_mirror.sh
+    common/travis/prepare.sh
     ./xbps-src binary-bootstrap
 }
 
