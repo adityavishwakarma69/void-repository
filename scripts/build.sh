@@ -44,7 +44,7 @@ setup_environment() {
 
     cd "$VOID_DIR"
 
-    cp -r "$SRCPKGS" srcpkgs
+    cp -r "$SRCPKGS"/* srcpkgs
 
 
     common/travis/set_mirror.sh
