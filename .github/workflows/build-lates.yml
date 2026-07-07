@@ -6,14 +6,12 @@ on:
       - main
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
 
     container:
       image: ghcr.io/void-linux/void-glibc-full:latest
@@ -41,11 +39,32 @@ jobs:
           chown -R builder:builder "$GITHUB_WORKSPACE"
 
       - name: Make build script executable
-        run: chmod +x scripts/build.sh
+        run: |
+          chmod +x scripts/build.sh
+          chmod +x scripts/sign.sh
 
       - name: Build packages
         run: |
           sudo -Eu builder ./scripts/build.sh --arch "x86_64 aarch64"
+
+      - name: Fetch Signing Key
+        env:
+          XBPS_PRIVATE_KEY: ${{ secrets.XBPS_PRIVATE_KEY }}
+        run: |
+          install -d -o builder -g builder -m 700 /home/builder/.xbps
+          printf '%s' "$XBPS_PRIVATE_KEY" > /home/builder/.xbps/repository.pem
+          chown builder:builder /home/builder/.xbps/repository.pem
+          chmod 600 /home/builder/.xbps/repository.pem
+
+      - name: Sign Repo
+        env:
+          SIGNER: ${{ github.repository_owner }}
+        run: |
+          sudo -Eu builder ./scripts/sign.sh target "/home/builder/.xbps/repository.pem" "$SIGNER"
+
+      - name: Clean Signing Key
+        if: always()
+        run: rm -rf "/home/builder/.xbps"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -56,6 +75,11 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
 
     environment:
       name: github-pages
