@@ -1,27 +1,23 @@
-name: Build Repository
+name: Build Packages
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-
     container:
       image: ghcr.io/void-linux/void-glibc-full:latest
       options: --privileged
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    permissions:
+      contents: read
 
-      - name: Install build dependencies
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
         run: |
           mkdir -p /etc/xbps.d
           cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
@@ -33,73 +29,24 @@ jobs:
             shadow \
             sudo \
             xtools \
-            66-devel
+            66-devel \
+            python3
 
+      - name: Create builder
+        run: |
           useradd -m -G xbuilder builder
           chown -R builder:builder "$GITHUB_WORKSPACE"
 
-      - name: Make build script executable
-        run: |
-          chmod +x scripts/build.sh
-          chmod +x scripts/sign.sh
-
       - name: Build packages
         run: |
-          sudo -Eu builder ./scripts/build.sh --arch "x86_64 aarch64"
+          sudo -Eu builder \
+            python3 -m scripts.packager \
+            --workspace /tmp/work \
+            --target out \
+            --arch x86_64 aarch64
 
-      - name: Fetch Signing Key
-        env:
-          XBPS_PRIVATE_KEY: ${{ secrets.XBPS_PRIVATE_KEY }}
-        run: |
-          install -d -o builder -g builder -m 700 /home/builder/.xbps
-          printf '%s' "$XBPS_PRIVATE_KEY" > /home/builder/.xbps/repository.pem
-          chown builder:builder /home/builder/.xbps/repository.pem
-          chmod 600 /home/builder/.xbps/repository.pem
-
-      - name: Sign Repo
-        env:
-          SIGNER: ${{ github.repository_owner }}
-        run: |
-          sudo -Eu builder ./scripts/sign.sh target "/home/builder/.xbps/repository.pem" "$SIGNER"
-
-      - name: Clean Signing Key
-        if: always()
-        run: rm -rf "/home/builder/.xbps"
-
-      - name: Upload build artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: xbps-repository
-          path: target/
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: xbps-repository
-          path: target
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: target
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          name: packages
+          path: out/
