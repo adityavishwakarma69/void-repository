@@ -11,10 +11,17 @@ KEY="$2"
 SIGNER="$3"
 
 
-for repo in "$TARGET"/*
-do
-  echo "signing $repo packages"
-  xbps-rindex --privkey "$KEY" -S "$repo"/*.xbps
-  echo "signing $repo"
-  xbps-rindex --privkey "$KEY" -s "$repo" --signedby "$SIGNER"
+for repo in "$TARGET"/*; do
+    [ -d "$repo" ] || continue
+
+    arch="$(basename "$repo")"
+
+    env XBPS_ARCH="$arch" \
+        xbps-rindex --privkey "$KEY" -S "$repo"/*.xbps
+
+    env XBPS_ARCH="$arch" \
+        xbps-rindex \
+            --privkey "$KEY" \
+            --signedby "$SIGNER" \
+            -s "$repo"
 done
