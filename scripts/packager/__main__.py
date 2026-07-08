@@ -9,8 +9,8 @@ from .builder import Builder
 
 def parse_args():
     parser = ArgumentParser(
-        prog="repository",
-        description="Void repository build tool"
+        prog="packager",
+        description="xbps package build tool"
     )
     parser.add_argument(
         "--workspace",
