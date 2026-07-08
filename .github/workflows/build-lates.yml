@@ -55,25 +55,24 @@ jobs:
           ref: repository
           path: repository
 
-      - name: Debug checkout
+      - name: Fetch signing key
+        env:
+          XBPS_PRIVATE_KEY: ${{ secrets.XBPS_PRIVATE_KEY }}
         run: |
-          echo "Workspace:"
-          ls -la "$GITHUB_WORKSPACE"
-
-          echo
-          echo "Repository directory:"
-          ls -la "$GITHUB_WORKSPACE/repository"
-
-          echo
-          echo "Git status:"
-          git -C "$GITHUB_WORKSPACE/repository" status
+          install -d -m 700 /tmp/xbps-signing
+          printf '%s' "$XBPS_PRIVATE_KEY" > /tmp/xbps-signing/repository.pem
+          chmod 600 /tmp/xbps-signing/repository.pem
 
       - name: Merge packages
         working-directory: source
+        env:
+          SIGNER: "${{ github.repository_owner }} (auto)"
         run: |
           python3 -m scripts.repository \
           --packages "$GITHUB_WORKSPACE/source/out" \
-          --repository "$GITHUB_WORKSPACE/repository"
+          --repository "$GITHUB_WORKSPACE/repository" \
+          --key "/tmp/xbps-signing/repository.pem" \
+          --signedby "$SIGNER"
 
       - name: Commit and push
         working-directory: repository
