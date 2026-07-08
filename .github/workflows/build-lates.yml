@@ -55,6 +55,19 @@ jobs:
           ref: repository
           path: repository
 
+      - name: Debug checkout
+        run: |
+          echo "Workspace:"
+          ls -la "$GITHUB_WORKSPACE"
+
+          echo
+          echo "Repository directory:"
+          ls -la "$GITHUB_WORKSPACE/repository"
+
+          echo
+          echo "Git status:"
+          git -C "$GITHUB_WORKSPACE/repository" status
+
       - name: Merge packages
         working-directory: source
         run: |
@@ -65,6 +78,7 @@ jobs:
       - name: Commit and push
         working-directory: repository
         run: |
+          pwd
           ls -la
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
