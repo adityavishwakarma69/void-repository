@@ -1,7 +1,7 @@
 # Template file for 'ani-cli'
 pkgname=ani-cli
 version=4.14
-revision=1
+revision=2
 short_desc="Watch anime on terminal"
 maintainer="aditya vishwakarma <adityavishwakarma69@protonmail.com>"
 license="GPL-3.0-only"

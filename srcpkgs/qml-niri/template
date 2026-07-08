@@ -1,7 +1,7 @@
 # Template file for 'qml-niri'
 pkgname=qml-niri
 version=0.2.0
-revision=1
+revision=2
 short_desc="A qt6 QML Module For Niri IPC"
 maintainer="aditya vishwakarma <adityavishwakarma69@protonmail.com>"
 license="MIT"
