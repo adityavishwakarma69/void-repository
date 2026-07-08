@@ -13,12 +13,14 @@ def sign_repositor(arch: Path, key_file: Path, signer: str) -> None:
     run(
         "xbps-rindex",
         "-S", *(str(pkg) for pkg in packages),
+        "--privkey", str(key_file),
         env=env
     )
     run(
         "xbps-rindex",
         "-s", str(arch),
         "--signedby", signer,
+        "--privkey", str(key_file),
         env=env
     )
 
