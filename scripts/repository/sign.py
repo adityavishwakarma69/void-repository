@@ -29,4 +29,4 @@ def sign(repository: Path, key_file: Path, signer: str):
             continue
 
         print(f"signing {arch.name}")
-        sign_repositor(arch)
+        sign_repositor(arch, key_file, signer)
