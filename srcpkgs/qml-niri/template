@@ -6,7 +6,7 @@ short_desc="A qt6 QML Module For Niri IPC"
 maintainer="aditya vishwakarma <adityavishwakarma69@protonmail.com>"
 license="MIT"
 homepage="https://github.com/imiric/qml-niri"
-hostmakedepends="just cmake make"
+hostmakedepends="just cmake make patchelf"
 makedepends="gcc qt6-base-devel qt6-declarative-devel"
 depends="niri qt6-base qt6-declarative"
 distfiles="https://github.com/imiric/qml-niri/archive/refs/tags/v${version}.tar.gz"
@@ -14,6 +14,7 @@ checksum=f8ed442aa4850c35fa9c95a8904b7a3317d2335a72bcc2dbb6f5ea7866c47d06
 
 do_build() {
   just build
+  patchelf --set-rpath '$ORIGIN' build/Niri/libNiriplugin.so
 }
 
 do_install() {

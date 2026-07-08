@@ -12,4 +12,6 @@ checksum=be40c779605b9b5eb4c09e63a1f460bcc69d73a3ab6e707279548fb8513c96c0
 do_install() {
     vbin ani-cli
     vman ani-cli.1
+
+    vlicense LICENSE
 }
