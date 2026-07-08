@@ -1,4 +1,4 @@
-name: Build Packages
+name: Build And Deploy Packages
 
 on:
   workflow_dispatch:
@@ -16,6 +16,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: source
 
       - name: Install dependencies
         run: |
@@ -35,18 +37,19 @@ jobs:
       - name: Create builder
         run: |
           useradd -m -G xbuilder builder
-          chown -R builder:builder "$GITHUB_WORKSPACE"
+          chown -R builder:builder "$GITHUB_WORKSPACE/source"
 
       - name: Build packages
+        working-directory: source
         run: |
           sudo -Eu builder \
             python3 -m scripts.packager \
             --workspace /tmp/work \
-            --target out \
+            --target "$GITHUB_WORKSPACE/source/out" \
             --arch x86_64 aarch64
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: packages
-          path: out/
+          path: source/out
