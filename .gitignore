@@ -1,5 +1,6 @@
 build
 target
+docker-run.sh
 
 __pycache__/
 *.py[cod]

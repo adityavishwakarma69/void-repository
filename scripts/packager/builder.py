@@ -47,12 +47,16 @@ class Builder:
                        arch: str) -> None:
 
         print("building pkgs", *packages, f"for {arch}")
-        args = ["./xbps-src"]
+        baseargs = ["./xbps-src"]
         if arch != self.host_arch:
-            args.extend(["-a", arch])
-        args.extend(["pkg", *packages])
+            baseargs.extend(["-a", arch])
 
-        run(*args, cwd=self.void_dir)
+        for pkg in packages:
+            run(
+                *baseargs,
+                "pkg", pkg,
+                cwd=self.void_dir
+            )
 
     def collect_repo(self, arch: str) -> None:
         src = self.void_dir/"hostdir"/"binpkgs"

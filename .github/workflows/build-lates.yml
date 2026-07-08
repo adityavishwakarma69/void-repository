@@ -47,7 +47,7 @@ jobs:
             python3 -m scripts.packager \
             --workspace /tmp/work \
             --target "$GITHUB_WORKSPACE/source/out" \
-            --arch x86_64 aarch64
+            --arch x86_64
 
       - name: Checkout Repository
         uses: actions/checkout@v4
