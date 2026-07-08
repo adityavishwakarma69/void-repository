@@ -65,6 +65,7 @@ jobs:
       - name: Commit and push
         working-directory: repository
         run: |
+          ls -la
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
