@@ -1,6 +1,6 @@
 # Template file for 'ani-cli'
 pkgname=ani-cli
-version=4.15
+version=5.0
 revision=1
 short_desc="Watch anime on terminal"
 maintainer="aditya vishwakarma <adityavishwakarma69@protonmail.com>"
@@ -8,7 +8,7 @@ license="GPL-3.0-only"
 homepage="https://github.com/pystardust/ani-cli"
 depends="mpv fzf curl grep sed yt-dlp"
 distfiles="https://github.com/pystardust/ani-cli/archive/refs/tags/v${version}.tar.gz"
-checksum=7ede3794978dc2eec87475e0ea96449a604a2589e940c1eab6bfbddb8529f973
+checksum=e4703d2f563eee27ea16d92f8e77e3f8a1f07ba8b2433598c3a1ce642841c35c
 do_install() {
     vbin ani-cli
     vman ani-cli.1
