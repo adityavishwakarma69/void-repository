@@ -1,6 +1,6 @@
 # Template file for 'qml-niri'
 pkgname=qml-niri
-version=0.2.1
+version=0.3.0
 revision=1
 short_desc="A qt6 QML Module For Niri IPC"
 maintainer="aditya vishwakarma <adityavishwakarma69@protonmail.com>"
@@ -13,7 +13,7 @@ makedepends="gcc qt6-base-devel qt6-declarative-devel"
 depends="niri qt6-base qt6-declarative"
 distfiles="https://github.com/imiric/qml-niri/archive/refs/tags/v${version}.tar.gz"
 
-checksum=98c5ae261922a3945f93a2ea2aec92ab883b29041a5c0412c2e8b63803f9fdb0
+checksum=711d3569e3f5eca1fdafad1ef3fcb7e2d973e3e61f9f01f2b491f6f797ba5425
 
 configure_args="-DQML_INSTALL_DIR=/usr/lib/qt6/qml"
 
